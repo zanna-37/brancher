@@ -16,12 +16,15 @@ const applyNavStyleTo = function(element) {
 * On DOM ready do Business logic
 */
 document.addEventListener('DOMContentLoaded', function() {
+
     /**
     * Fixed navbar
     */
-    let hTreeView = document.getElementById('h-tree-view');
-
+    let hTreeView = document.createElement('nav');
+    hTreeView.id = "h-tree-view";
     applyNavStyleTo(hTreeView);
+    document.body.appendChild(hTreeView);
+
 
     /**
     * Container for all the h* of the page
