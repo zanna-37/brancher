@@ -13,6 +13,22 @@ const applyNavStyleTo = function(element) {
 }
 
 /**
+* Extract the text in a html string removing all the tags and the excessive blanks.
+*/
+const extractOnelineText = function(html_content) {
+    // trim spaces
+    html_content.trim();
+    // deletes html tags
+    html_content = html_content.replace(/<\/*.+\/*>/g, '')
+    // removes excessive blanks
+    html_content = html_content.replace(/\s\s+/g, ' ');
+    // removes tabs
+    html_content = html_content.replace(/\t+/g, ' ');
+
+    return html_content;
+}
+
+/**
 * On DOM ready do Business logic
 */
 document.addEventListener('DOMContentLoaded', function() {
@@ -20,21 +36,21 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
     * Fixed navbar
     */
-    let hTreeView = document.createElement('nav');
-    hTreeView.id = "h-tree-view";
-    applyNavStyleTo(hTreeView);
-    document.body.appendChild(hTreeView);
+    let brancherView = document.createElement('nav');
+    brancherView.id = "brancher-view-placeholder";
+    applyNavStyleTo(brancherView);
+    document.body.appendChild(brancherView);
 
     // link the offsetHeight of the nav bar to the paddingTop of the body
     const resizeObserver = new ResizeObserver(entries => {
             document.body.style.paddingTop = entries[0].target.offsetHeight + "px";
         }
     )
-    resizeObserver.observe(hTreeView);
+    resizeObserver.observe(brancherView);
 
 
     /**
-    * Container for all the h* of the page
+    * Container for all the <h*> of the page
     */
     let h_objs = [
         document.getElementsByTagName('h1'),
@@ -47,9 +63,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('scroll', function() {
         /**
-        * Coordinate of the first pixel under the navbar (hTreeView)
+        * Coordinate of the first pixel under the navbar (brancherView)
         */
-        let cur_pos = window.scrollY + hTreeView.offsetHeight;
+        let cur_pos = window.scrollY + brancherView.offsetHeight;
 
         /**
         * Container for the specific h* choosen to be shown so far
@@ -74,17 +90,35 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // create id as anchors if not already present
+        for(i=0; i<6; i++) {
+            if(h_obj_selected[i] === undefined) {
+                break; //reached the leaf
+            }
+
+            if(h_obj_selected[i].id == ""){
+                let random_string = "autogen-id-" + (Math.random() + 1).toString(36).substring(2);
+                h_obj_selected[i].id = random_string;
+            }
+        }
+
         let result = '';
         for(i=0; i<6; i++) {
             if(h_obj_selected[i] === undefined) {
                 break; //reached the leaf
-            } else if (i>0) {
-                result += ' ▶ ';
             }
-            // The first 'replace' deletes p and br html tags, the second removes blanks
-            result += '<b>' + h_obj_selected[i].innerHTML.trim().replace(/<\/*(p|br)>/g, '').replace(/\s\s+/g, ' ') + '</b>';
+
+            // Add delimiter
+            if (i>0) {
+                result += '<span> » </span>'; // otherwise use ▶
+            }
+
+            // Add label
+            let label_content = extractOnelineText(h_obj_selected[i].innerHTML);
+            console.assert(h_obj_selected[i].id !== "", "Found undefined id! This should never happen!")
+            result += '<a href="#' + h_obj_selected[i].id + '">' + label_content + '</a>';
         }
 
-        hTreeView.innerHTML = result;
+        brancherView.innerHTML = '<b>' + result; + '</b>'
     });
 });
