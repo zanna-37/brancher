@@ -2,6 +2,10 @@
 * CSS
 */
 const css_content =`
+body {
+    padding-top: 0; /*dinamically modified later*/
+}
+
 #brancher-view-placeholder {
     position: fixed;
     background-color: whitesmoke;
