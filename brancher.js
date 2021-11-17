@@ -25,6 +25,13 @@ document.addEventListener('DOMContentLoaded', function() {
     applyNavStyleTo(hTreeView);
     document.body.appendChild(hTreeView);
 
+    // link the offsetHeight of the nav bar to the paddingTop of the body
+    const resizeObserver = new ResizeObserver(entries => {
+            document.body.style.paddingTop = entries[0].target.offsetHeight + "px";
+        }
+    )
+    resizeObserver.observe(hTreeView);
+
 
     /**
     * Container for all the h* of the page
