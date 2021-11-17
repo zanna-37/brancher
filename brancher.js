@@ -1,16 +1,18 @@
 /**
-* Apply navbar style
+* CSS
 */
-const applyNavStyleTo = function(element) {
-    element.style.position = 'fixed';
-    element.style.backgroundColor = 'whitesmoke';
-    element.style.top = 0;
-    element.style.left = 0;
-    element.style.right = 0;
-    element.style.width = 'auto';
-    element.style.height = 'auto';
-    element.style.padding = '10px';
+const css_content =`
+#brancher-view-placeholder {
+    position: fixed;
+    background-color: whitesmoke;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: auto;
+    padding: 10px;
 }
+`;
 
 /**
 * Extract the text in a html string removing all the tags and the excessive blanks.
@@ -34,11 +36,17 @@ const extractOnelineText = function(html_content) {
 document.addEventListener('DOMContentLoaded', function() {
 
     /**
+    * Add CSS
+    */
+    let css = document.createElement('style');
+    css.innerHTML=css_content;
+    document.body.appendChild(css);
+
+    /**
     * Fixed navbar
     */
     let brancherView = document.createElement('nav');
     brancherView.id = "brancher-view-placeholder";
-    applyNavStyleTo(brancherView);
     document.body.appendChild(brancherView);
 
     // link the offsetHeight of the nav bar to the paddingTop of the body
