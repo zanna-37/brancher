@@ -17,6 +17,10 @@ body {
     padding: 8px;
 }
 
+#brancher-navbar-placeholder a {
+    color: #16a085;
+}
+
 #div_body {
     flex-grow: 1;
     padding: 8px; /* restore user-agent default */
