@@ -3,17 +3,22 @@
 */
 const css_content =`
 body {
-    margin: 0; /* override user-agent default */
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+    margin: 0 !important; /* override user-agent default */
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100vh !important;
 }
 
 #brancher-navbar-placeholder {
+    display: block !important;
     background-color: whitesmoke;
     width: auto;
     height: auto;
     padding: 8px;
+}
+
+#brancher-navbar-placeholder a {
+    color: #16a085;
 }
 
 #div_body {
