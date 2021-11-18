@@ -3,18 +3,23 @@
 */
 const css_content =`
 body {
-    padding-top: 0; /*dinamically modified later*/
+    margin: 0; /* override user-agent default */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-#brancher-view-placeholder {
-    position: fixed;
+#brancher-navbar-placeholder {
     background-color: whitesmoke;
-    top: 0;
-    left: 0;
-    right: 0;
     width: auto;
     height: auto;
-    padding: 10px;
+    padding: 8px;
+}
+
+#div_body {
+    flex-grow: 1;
+    padding: 8px; /* restore user-agent default */
+    overflow-y: auto;
 }
 `;
 
@@ -38,27 +43,24 @@ const extractOnelineText = function(html_content) {
 * On DOM ready do Business logic
 */
 document.addEventListener('DOMContentLoaded', function() {
+    // Place body content inside div_body
+    let div_body = document.createElement('div');
+    div_body.id = "div_body";
+    div_body.innerHTML = document.body.innerHTML;
+    document.body.innerHTML="";
 
-    /**
-    * Add CSS
-    */
+    // Add fixed navbar
+    let brancher_navbar = document.createElement('nav');
+    brancher_navbar.id = "brancher-navbar-placeholder";
+    document.body.appendChild(brancher_navbar);
+
+    // Restore body content
+    document.body.appendChild(div_body);
+
+    // Add CSS
     let css = document.createElement('style');
     css.innerHTML=css_content;
     document.body.appendChild(css);
-
-    /**
-    * Fixed navbar
-    */
-    let brancherView = document.createElement('nav');
-    brancherView.id = "brancher-view-placeholder";
-    document.body.appendChild(brancherView);
-
-    // link the offsetHeight of the nav bar to the paddingTop of the body
-    const resizeObserver = new ResizeObserver(entries => {
-            document.body.style.paddingTop = entries[0].target.offsetHeight + "px";
-        }
-    )
-    resizeObserver.observe(brancherView);
 
 
     /**
@@ -73,12 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementsByTagName('h6')
     ];
 
-    window.addEventListener('scroll', function() {
-        /**
-        * Coordinate of the first pixel under the navbar (brancherView)
-        */
-        let cur_pos = window.scrollY + brancherView.offsetHeight;
-
+    div_body.addEventListener('scroll', function() {
         /**
         * Container for the specific h* choosen to be shown so far
         */
@@ -87,16 +84,24 @@ document.addEventListener('DOMContentLoaded', function() {
         let i;
         for(i=0; i<6; i++) {
             for (const element of h_objs[i]) {
+
+                let nav_height = brancher_navbar.getBoundingClientRect().height;
+
                 /**
-                * Top of the current h*
+                * Distance between the bottom of brancher_navbar and the top of the current h*
                 */
-                let top = element.offsetTop;
+                let top = element.getBoundingClientRect().top - nav_height;
+
                 /**
-                * Bottom of the current h*
+                * Distance between the bottom of brancher_navbar and the top of the current h(*-1)
                 */
-                let bottom = top + element.offsetHeight;
-                // If we pass the current h* with the navbar AND the current h* is underneath the previous h* (i.e. h^(*-1))
-                if (cur_pos >= top && (h_obj_selected[i-1]===undefined || top > h_obj_selected[i-1].offsetTop)) {
+                let top_previous;
+                if(h_obj_selected[i-1]!==undefined) {
+                    top_previous = h_obj_selected[i-1].getBoundingClientRect().top - nav_height;
+                }
+
+                // If we pass the current h* with the navbar AND the current h* is underneath the previous h* (i.e. h(*-1))
+                if ( top<=0 && (h_obj_selected[i-1]===undefined || top > top_previous )) {
                     h_obj_selected[i] = element;
                 }
             }
@@ -131,6 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
             result += '<a href="#' + h_obj_selected[i].id + '">' + label_content + '</a>';
         }
 
-        brancherView.innerHTML = '<b>' + result; + '</b>'
+        brancher_navbar.innerHTML = '<b>' + result; + '</b>'
     });
 });
