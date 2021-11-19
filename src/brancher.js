@@ -2,11 +2,23 @@
 * CSS
 */
 const css_content =`
+html {
+    height: 100vh !important;
+    height: stretch !important;
+    /* TODO remove as soon as 'stretch' is largely available.
+    See: https://caniuse.com/mdn-css_properties_height_stretch*/
+    height: -webkit-fill-available !important;
+}
+
 body {
     margin: 0 !important; /* override user-agent default */
     display: flex !important;
     flex-direction: column !important;
     height: 100vh !important;
+    height: stretch !important;
+    /* TODO remove as soon as 'stretch' is largely available.
+    See: https://caniuse.com/mdn-css_properties_height_stretch*/
+    height: -webkit-fill-available !important;
 }
 
 #brancher-navbar-placeholder {
