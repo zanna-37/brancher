@@ -1,0 +1,26 @@
+name: commitlint
+
+on:
+    push:
+        branches: [ main, develop ]
+    pull_request:
+        branches: [ main, develop ]
+
+jobs:
+    run-commitlint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                fetch-depth: 0  # fetch all the commits
+                                #(the default is to fetch only the last one)
+
+            - name: Setup Node
+              uses: actions/setup-node@v2
+              #with:
+              #  node-version: 14.x
+
+            - name: Install dependencies
+              run: npm install --global @commitlint/cli @commitlint/config-conventional
+
+            - uses: wagoid/commitlint-github-action@v4
